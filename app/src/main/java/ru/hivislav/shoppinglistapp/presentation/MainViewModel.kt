@@ -1,6 +1,5 @@
 package ru.hivislav.shoppinglistapp.presentation
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.hivislav.shoppinglistapp.data.ShopListRepositoryImpl
 import ru.hivislav.shoppinglistapp.domain.DeleteShopItemUseCase
