@@ -1,12 +1,17 @@
 package ru.hivislav.shoppinglistapp.presentation
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import ru.hivislav.shoppinglistapp.databinding.ItemShopDisabledBinding
 import ru.hivislav.shoppinglistapp.databinding.ItemShopEnabledBinding
 import ru.hivislav.shoppinglistapp.domain.ShopItem
 
-class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
+const val SHOP_ITEM_VIEW_TYPE_ENABLED = 0
+const val SHOP_ITEM_VIEW_TYPE_DISABLED = 1
+
+class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemBaseViewHolder>() {
 
     var shopItemList = listOf<ShopItem>()
         set(value) {
@@ -14,16 +19,28 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
-        val binding = ItemShopEnabledBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return ShopItemViewHolder(binding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemBaseViewHolder {
+        return when (viewType) {
+            SHOP_ITEM_VIEW_TYPE_ENABLED -> {
+                val binding = ItemShopEnabledBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                ShopItemEnabledViewHolder(binding)
+            }
+            else -> {
+                val binding = ItemShopDisabledBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+                ShopItemDisabledViewHolder(binding)
+            }
+        }
     }
 
-    override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ShopItemBaseViewHolder, position: Int) {
         holder.bind(shopItemList[position])
     }
 
@@ -31,9 +48,30 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>(
        return shopItemList.size
     }
 
-    class ShopItemViewHolder(private val binding: ItemShopEnabledBinding)
-        : RecyclerView.ViewHolder(binding.root) {
-        fun bind(shopItem: ShopItem) {
+    override fun getItemViewType(position: Int): Int {
+        return when(shopItemList[position].enabled) {
+            true -> SHOP_ITEM_VIEW_TYPE_ENABLED
+            false -> SHOP_ITEM_VIEW_TYPE_DISABLED
+        }
+    }
+
+    abstract class ShopItemBaseViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        abstract fun bind(shopItem: ShopItem)
+    }
+
+    class ShopItemEnabledViewHolder(private val binding: ItemShopEnabledBinding)
+        : ShopItemBaseViewHolder(binding.root) {
+        override fun bind(shopItem: ShopItem) {
+            itemView.apply {
+                binding.rvShopListItemName.text = "${shopItem.name} + Enabled"
+                binding.rvShopListItemCount.text = shopItem.count.toString()
+            }
+        }
+    }
+
+    class ShopItemDisabledViewHolder(private val binding: ItemShopDisabledBinding)
+        : ShopItemBaseViewHolder(binding.root) {
+        override fun bind(shopItem: ShopItem) {
             itemView.apply {
                 binding.rvShopListItemName.text = shopItem.name
                 binding.rvShopListItemCount.text = shopItem.count.toString()
