@@ -10,6 +10,7 @@ import ru.hivislav.shoppinglistapp.domain.ShopItem
 
 const val SHOP_ITEM_VIEW_TYPE_ENABLED = 0
 const val SHOP_ITEM_VIEW_TYPE_DISABLED = 1
+const val MAX_POOL_SIZE = 15
 
 class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemBaseViewHolder>() {
 
@@ -18,6 +19,9 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemBaseViewHold
             field = value
             notifyDataSetChanged()
         }
+
+    var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
+    var onShopItemClickListener: ((ShopItem) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemBaseViewHolder {
         return when (viewType) {
@@ -42,6 +46,14 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemBaseViewHold
 
     override fun onBindViewHolder(holder: ShopItemBaseViewHolder, position: Int) {
         holder.bind(shopItemList[position])
+        holder.itemView.setOnLongClickListener {
+            onShopItemLongClickListener?.invoke(shopItemList[position])
+            true
+        }
+
+        holder.itemView.setOnClickListener {
+            onShopItemClickListener?.invoke(shopItemList[position])
+        }
     }
 
     override fun getItemCount(): Int {
@@ -63,7 +75,7 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemBaseViewHold
         : ShopItemBaseViewHolder(binding.root) {
         override fun bind(shopItem: ShopItem) {
             itemView.apply {
-                binding.rvShopListItemName.text = "${shopItem.name} + Enabled"
+                binding.rvShopListItemName.text = shopItem.name
                 binding.rvShopListItemCount.text = shopItem.count.toString()
             }
         }
