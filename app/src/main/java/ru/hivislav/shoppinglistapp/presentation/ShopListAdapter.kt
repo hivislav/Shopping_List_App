@@ -3,7 +3,7 @@ package ru.hivislav.shoppinglistapp.presentation
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.hivislav.shoppinglistapp.databinding.ItemShopDisabledBinding
 import ru.hivislav.shoppinglistapp.databinding.ItemShopEnabledBinding
@@ -13,15 +13,7 @@ const val SHOP_ITEM_VIEW_TYPE_ENABLED = 0
 const val SHOP_ITEM_VIEW_TYPE_DISABLED = 1
 const val MAX_POOL_SIZE = 15
 
-class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemBaseViewHolder>() {
-
-    var shopItemList = listOf<ShopItem>()
-        set(value) {
-            val callback = ShopListDiffCallback(shopItemList, value)
-            val diffResult = DiffUtil.calculateDiff(callback)
-            diffResult.dispatchUpdatesTo(this)
-            field = value
-        }
+class ShopListAdapter: ListAdapter<ShopItem, ShopListAdapter.ShopItemBaseViewHolder>(ShopItemDiffCallback()) {
 
     var onShopItemLongClickListener: ((ShopItem) -> Unit)? = null
     var onShopItemClickListener: ((ShopItem) -> Unit)? = null
@@ -48,15 +40,12 @@ class ShopListAdapter: RecyclerView.Adapter<ShopListAdapter.ShopItemBaseViewHold
     }
 
     override fun onBindViewHolder(holder: ShopItemBaseViewHolder, position: Int) {
-        holder.bind(shopItemList[position])
+        holder.bind(getItem(position))
     }
 
-    override fun getItemCount(): Int {
-       return shopItemList.size
-    }
 
     override fun getItemViewType(position: Int): Int {
-        return when(shopItemList[position].enabled) {
+        return when(getItem(position).enabled) {
             true -> SHOP_ITEM_VIEW_TYPE_ENABLED
             false -> SHOP_ITEM_VIEW_TYPE_DISABLED
         }
