@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Shopping List App</string>
     <string name="fab_add_new_shop_item">Add new shop item</string>
+    <string name="button_save_shop_item">Save</string>
+    <string name="hint_count_text_input_shop_item">Count</string>
+    <string name="hint_name_text_input_shop_item">Name</string>
 </resources>
