@@ -25,6 +25,11 @@ class MainActivity : AppCompatActivity() {
         viewModel.shopList.observe(this) {
             adapter.submitList(it)
         }
+
+        binding.fabAddShopItem.setOnClickListener {
+            val intent = ShopItemActivity.newIntentAddItem(this)
+            startActivity(intent)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -67,6 +72,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupShopItemClickListener() {
         adapter.onShopItemClickListener = {
             Log.d("@@@", "${it.name} был нажат")
+            val intent = ShopItemActivity.newIntentEditItem(this, it.id)
+            startActivity(intent)
         }
     }
 
