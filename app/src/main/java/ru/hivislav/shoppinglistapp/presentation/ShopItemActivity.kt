@@ -3,117 +3,32 @@ package ru.hivislav.shoppinglistapp.presentation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import ru.hivislav.shoppinglistapp.R
-import ru.hivislav.shoppinglistapp.databinding.ActivityShopItemBinding
 import ru.hivislav.shoppinglistapp.domain.ShopItem
 
 class ShopItemActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityShopItemBinding
-    private lateinit var viewModel: ShopItemViewModel
 
     private var screenMode = MODE_UNKNOWN
     private var shopItemId = ShopItem.UNDEFINED_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityShopItemBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_shop_item)
         parseIntent()
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-
-        when(screenMode) {
-            MODE_EDIT -> launchEditMode()
-            MODE_ADD -> launchAddMode()
-        }
-
-        setupTextChangedListeners()
-        observeViewModels()
+        openShopItemFragment()
     }
 
-    private fun observeViewModels() {
-        viewModel.errorInputName.observe(this) {
-            val message = if (it) {
-                getString(R.string.error_name_text_input_shop_item)
-            } else {
-                null
-            }
-            binding.textInputShopItemActivityName.error = message
+    private fun openShopItemFragment() {
+        val fragment = when (screenMode) {
+            MODE_EDIT -> ShopItemFragment.newInstanceEditItem(shopItemId)
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            else -> throw RuntimeException("Unknown screen mode: $screenMode")
         }
-
-        viewModel.errorInputCount.observe(this) {
-            val message = if (it) {
-                getString(R.string.error_count_text_input_shop_item)
-            } else {
-                null
-            }
-            binding.textInputShopItemActivityCount.error = message
-        }
-
-        viewModel.shouldCloseScreen.observe(this) {
-            finish()
-        }
-    }
-
-    private fun setupTextChangedListeners() {
-        binding.editTextShopItemActivityName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetErrorInputName()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-        })
-
-        binding.editTextShopItemActivityCount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetErrorInputCount()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-        })
-    }
-
-    private fun launchEditMode() {
-        viewModel.getShopItem(shopItemId)
-        viewModel.shopItem.observe(this) {
-            with(binding) {
-                editTextShopItemActivityName.setText(it.name)
-                editTextShopItemActivityCount.setText(it.id.toString())
-            }
-        }
-
-        with(binding) {
-            buttonSaveShopItemActivity.setOnClickListener {
-                viewModel.editShopItem(
-                    editTextShopItemActivityName.text?.toString(),
-                    editTextShopItemActivityCount.text?.toString()
-                )
-            }
-        }
-    }
-
-    private fun launchAddMode() {
-        with(binding) {
-            buttonSaveShopItemActivity.setOnClickListener {
-                viewModel.addShopItem(
-                    editTextShopItemActivityName.text?.toString(),
-                    editTextShopItemActivityCount.text?.toString()
-                )
-            }
-        }
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.shopItemContainer, fragment)
+            .commit()
     }
 
     private fun parseIntent() {
