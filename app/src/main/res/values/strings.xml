@@ -4,4 +4,6 @@
     <string name="button_save_shop_item">Save</string>
     <string name="hint_count_text_input_shop_item">Count:</string>
     <string name="hint_name_text_input_shop_item">Name:</string>
+    <string name="error_name_text_input_shop_item">Invalid name</string>
+    <string name="error_count_text_input_shop_item">Invalid count</string>
 </resources>
