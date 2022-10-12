@@ -3,9 +3,12 @@ package ru.hivislav.shoppinglistapp.presentation
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import ru.hivislav.shoppinglistapp.R
 import ru.hivislav.shoppinglistapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -14,21 +17,44 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
     private val adapter = ShopListAdapter()
+    private var shopItemContainer: FragmentContainerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        shopItemContainer = binding.shopItemContainer
+
         setupRecyclerView()
+        setupFabClickListener()
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.shopList.observe(this) {
             adapter.submitList(it)
         }
+    }
 
+    private fun landscapeMode(): Boolean {
+        return shopItemContainer != null
+    }
+
+    private fun launchFragment(fragment: Fragment) {
+        supportFragmentManager.popBackStack()
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.shopItemContainer, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun setupFabClickListener() {
         binding.fabAddShopItem.setOnClickListener {
+            if (landscapeMode()) {
+                launchFragment(ShopItemFragment.newInstanceAddItem())
+            } else {
             val intent = ShopItemActivity.newIntentAddItem(this)
             startActivity(intent)
+            }
         }
     }
 
@@ -71,9 +97,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupShopItemClickListener() {
         adapter.onShopItemClickListener = {
-            Log.d("@@@", "${it.name} был нажат")
-            val intent = ShopItemActivity.newIntentEditItem(this, it.id)
-            startActivity(intent)
+            if (landscapeMode()) {
+                launchFragment(ShopItemFragment.newInstanceEditItem(it.id))
+            } else {
+
+                val intent = ShopItemActivity.newIntentEditItem(this, it.id)
+                startActivity(intent)
+            }
         }
     }
 

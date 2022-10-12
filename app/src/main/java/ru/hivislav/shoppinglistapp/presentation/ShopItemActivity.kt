@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentContainerView
 import ru.hivislav.shoppinglistapp.R
 import ru.hivislav.shoppinglistapp.domain.ShopItem
 
@@ -16,7 +17,9 @@ class ShopItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
         parseIntent()
-        openShopItemFragment()
+        if (savedInstanceState == null) {
+            openShopItemFragment()
+        }
     }
 
     private fun openShopItemFragment() {
@@ -27,7 +30,7 @@ class ShopItemActivity : AppCompatActivity() {
         }
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.shopItemContainer, fragment)
+            .replace(R.id.shopItemContainer, fragment)
             .commit()
     }
 
