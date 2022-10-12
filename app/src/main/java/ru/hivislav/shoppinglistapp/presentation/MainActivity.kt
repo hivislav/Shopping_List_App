@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.hivislav.shoppinglistapp.R
 import ru.hivislav.shoppinglistapp.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -47,17 +47,6 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun setupFabClickListener() {
-        binding.fabAddShopItem.setOnClickListener {
-            if (landscapeMode()) {
-                launchFragment(ShopItemFragment.newInstanceAddItem())
-            } else {
-            val intent = ShopItemActivity.newIntentAddItem(this)
-            startActivity(intent)
-            }
-        }
-    }
-
     private fun setupRecyclerView() {
         val recyclerViewShopList = binding.rvShopList
 
@@ -70,6 +59,17 @@ class MainActivity : AppCompatActivity() {
         setupShopItemLongClickListener()
         setupShopItemClickListener()
         setupShopItemSwipeListener(recyclerViewShopList)
+    }
+
+    private fun setupFabClickListener() {
+        binding.fabAddShopItem.setOnClickListener {
+            if (landscapeMode()) {
+                launchFragment(ShopItemFragment.newInstanceAddItem())
+            } else {
+                val intent = ShopItemActivity.newIntentAddItem(this)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun setupShopItemSwipeListener(recyclerViewShopList: RecyclerView) {
@@ -111,5 +111,9 @@ class MainActivity : AppCompatActivity() {
         adapter.onShopItemLongClickListener = {
             viewModel.changeEnableState(it)
         }
+    }
+
+    override fun onEditingFinished() {
+        supportFragmentManager.popBackStack()
     }
 }

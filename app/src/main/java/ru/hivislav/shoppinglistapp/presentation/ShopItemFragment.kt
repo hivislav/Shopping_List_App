@@ -1,5 +1,6 @@
 package ru.hivislav.shoppinglistapp.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,13 +15,24 @@ import ru.hivislav.shoppinglistapp.domain.ShopItem
 
 class ShopItemFragment: Fragment() {
 
+    private var screenMode = MODE_UNKNOWN
+    private var shopItemId = ShopItem.UNDEFINED_ID
+
     private var _binding: FragmentShopItemBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
+
     private lateinit var viewModel: ShopItemViewModel
 
-    private var screenMode = MODE_UNKNOWN
-    private var shopItemId = ShopItem.UNDEFINED_ID
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener) {
+            onEditingFinishedListener = context
+        } else {
+            throw RuntimeException("Activity must implement OnEditingFinishedListener")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +86,7 @@ class ShopItemFragment: Fragment() {
         }
 
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
-            activity?.onBackPressed()
+            onEditingFinishedListener.onEditingFinished()
         }
     }
 
@@ -152,6 +164,10 @@ class ShopItemFragment: Fragment() {
             }
             shopItemId = args.getInt(SHOP_ITEM_ID, ShopItem.UNDEFINED_ID)
         }
+    }
+
+    interface OnEditingFinishedListener {
+        fun onEditingFinished()
     }
 
         companion object {
