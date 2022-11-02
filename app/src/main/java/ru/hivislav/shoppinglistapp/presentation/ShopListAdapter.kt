@@ -59,8 +59,7 @@ class ShopListAdapter: ListAdapter<ShopItem, ShopListAdapter.ShopItemBaseViewHol
         : ShopItemBaseViewHolder(binding.root) {
         override fun bind(shopItem: ShopItem) {
             itemView.apply {
-                binding.rvShopListItemName.text = shopItem.name
-                binding.rvShopListItemCount.text = shopItem.count.toString()
+                binding.shopItem = shopItem
 
                 setOnLongClickListener {
                     onShopItemLongClickListener?.invoke(shopItem)
@@ -77,9 +76,8 @@ class ShopListAdapter: ListAdapter<ShopItem, ShopListAdapter.ShopItemBaseViewHol
     inner class ShopItemDisabledViewHolder(private val binding: ItemShopDisabledBinding)
         : ShopItemBaseViewHolder(binding.root) {
         override fun bind(shopItem: ShopItem) {
+            binding.shopItem = shopItem
             itemView.apply {
-                binding.rvShopListItemName.text = shopItem.name
-                binding.rvShopListItemCount.text = shopItem.count.toString()
 
                 setOnLongClickListener {
                     onShopItemLongClickListener?.invoke(shopItem)

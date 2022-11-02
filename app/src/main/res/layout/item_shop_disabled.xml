@@ -1,43 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/item_shop_card_view_margin_end_start_8dp"
-    android:layout_marginEnd="@dimen/item_shop_card_view_margin_end_start_8dp"
-    android:layout_marginTop="@dimen/item_shop_card_view_margin_top_bottom_4dp"
-    android:layout_marginBottom="@dimen/item_shop_card_view_margin_top_bottom_4dp"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="1dp"
-    app:cardUseCompatPadding="true">
 
-    <LinearLayout
+<layout>
+
+    <data>
+        <variable
+            name="shopItem"
+            type="ru.hivislav.shoppinglistapp.domain.ShopItem" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/item_shop_color_disabled"
-        android:orientation="horizontal"
-        android:padding="16dp">
+        android:layout_marginStart="@dimen/item_shop_card_view_margin_end_start_8dp"
+        android:layout_marginTop="@dimen/item_shop_card_view_margin_top_bottom_4dp"
+        android:layout_marginEnd="@dimen/item_shop_card_view_margin_end_start_8dp"
+        android:layout_marginBottom="@dimen/item_shop_card_view_margin_top_bottom_4dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="1dp"
+        app:cardUseCompatPadding="true">
 
-    <TextView
-        android:id="@+id/rvShopListItemName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="@color/white"
-        android:textSize="@dimen/item_shop_text_size_16sp"
-        android:textStyle="bold"
-        tools:text="ItemShop"/>
-
-        <TextView
-            android:id="@+id/rvShopListItemCount"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="@dimen/item_shop_text_size_16sp"
-            android:textStyle="bold"
-            tools:text="2"/>
+            android:background="@color/item_shop_color_disabled"
+            android:orientation="horizontal"
+            android:padding="16dp">
 
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/rvShopListItemName"
+                android:text="@{shopItem.name}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/item_shop_text_size_16sp"
+                android:textStyle="bold"
+                tools:text="ItemShop" />
+
+            <TextView
+                android:id="@+id/rvShopListItemCount"
+                android:text="@{String.valueOf(shopItem.count)}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/item_shop_text_size_16sp"
+                android:textStyle="bold"
+                tools:text="2" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>
