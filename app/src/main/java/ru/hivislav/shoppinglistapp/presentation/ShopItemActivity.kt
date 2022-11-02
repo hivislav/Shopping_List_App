@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentContainerView
 import ru.hivislav.shoppinglistapp.R
 import ru.hivislav.shoppinglistapp.domain.ShopItem
 

@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import ru.hivislav.shoppinglistapp.R
 import ru.hivislav.shoppinglistapp.databinding.FragmentShopItemBinding
 import ru.hivislav.shoppinglistapp.domain.ShopItem
 
@@ -23,7 +22,9 @@ class ShopItemFragment: Fragment() {
 
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
-    private lateinit var viewModel: ShopItemViewModel
+    private val viewModel by lazy {
+        ViewModelProvider(this)[ShopItemViewModel::class.java]
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -50,7 +51,8 @@ class ShopItemFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         when (screenMode) {
             MODE_EDIT -> launchEditMode()
@@ -67,23 +69,6 @@ class ShopItemFragment: Fragment() {
     }
 
     private fun observeViewModels() {
-        viewModel.errorInputName.observe(viewLifecycleOwner) {
-            val message = if (it) {
-                getString(R.string.error_name_text_input_shop_item)
-            } else {
-                null
-            }
-            binding.textInputShopItemActivityName.error = message
-        }
-
-        viewModel.errorInputCount.observe(viewLifecycleOwner) {
-            val message = if (it) {
-                getString(R.string.error_count_text_input_shop_item)
-            } else {
-                null
-            }
-            binding.textInputShopItemActivityCount.error = message
-        }
 
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
             onEditingFinishedListener.onEditingFinished()
@@ -118,16 +103,10 @@ class ShopItemFragment: Fragment() {
 
     private fun launchEditMode() {
         viewModel.getShopItem(shopItemId)
-        viewModel.shopItem.observe(viewLifecycleOwner) {
-            with(binding) {
-                editTextShopItemActivityName.setText(it.name)
-                editTextShopItemActivityCount.setText(it.id.toString())
-            }
-        }
 
         with(binding) {
             buttonSaveShopItemActivity.setOnClickListener {
-                viewModel.editShopItem(
+                viewModel?.editShopItem(
                     editTextShopItemActivityName.text?.toString(),
                     editTextShopItemActivityCount.text?.toString()
                 )
@@ -138,7 +117,7 @@ class ShopItemFragment: Fragment() {
     private fun launchAddMode() {
         with(binding) {
             buttonSaveShopItemActivity.setOnClickListener {
-                viewModel.addShopItem(
+                viewModel?.addShopItem(
                     editTextShopItemActivityName.text?.toString(),
                     editTextShopItemActivityCount.text?.toString()
                 )

@@ -1,10 +1,8 @@
 package ru.hivislav.shoppinglistapp.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -17,13 +15,11 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
 
     private lateinit var viewModel: MainViewModel
     private val adapter = ShopListAdapter()
-    private var shopItemContainer: FragmentContainerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        shopItemContainer = binding.shopItemContainer
 
         setupRecyclerView()
         setupFabClickListener()
@@ -35,7 +31,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
     }
 
     private fun landscapeMode(): Boolean {
-        return shopItemContainer != null
+        return binding.shopItemContainer != null
     }
 
     private fun launchFragment(fragment: Fragment) {
