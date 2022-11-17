@@ -9,18 +9,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import ru.hivislav.shoppinglistapp.data.ShopListRepositoryImpl
-import ru.hivislav.shoppinglistapp.domain.DeleteShopItemUseCase
-import ru.hivislav.shoppinglistapp.domain.EditShopItemUseCase
-import ru.hivislav.shoppinglistapp.domain.GetShopListUseCase
-import ru.hivislav.shoppinglistapp.domain.ShopItem
+import ru.hivislav.shoppinglistapp.domain.*
+import javax.inject.Inject
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repository = ShopListRepositoryImpl(application)
-
-    private val getShopListUseCase = GetShopListUseCase(repository)
-    private val deleteShopItemUseCase = DeleteShopItemUseCase(repository)
-    private val editShopItemUseCase = EditShopItemUseCase(repository)
+class MainViewModel @Inject constructor(
+    private val getShopListUseCase: GetShopListUseCase,
+    private val deleteShopItemUseCase: DeleteShopItemUseCase,
+    private val editShopItemUseCase: EditShopItemUseCase
+) : ViewModel() {
 
     val shopList = getShopListUseCase.getShopList()
 

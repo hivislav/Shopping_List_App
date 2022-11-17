@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import ru.hivislav.shoppinglistapp.databinding.FragmentShopItemBinding
 import ru.hivislav.shoppinglistapp.domain.ShopItem
+import javax.inject.Inject
 
 class ShopItemFragment: Fragment() {
 
@@ -22,11 +23,16 @@ class ShopItemFragment: Fragment() {
 
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private val viewModel by lazy {
-        ViewModelProvider(this)[ShopItemViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ShopItemViewModel::class.java]
     }
 
     override fun onAttach(context: Context) {
+        (requireActivity().application as ShopListApplication).component.inject(this)
+
         super.onAttach(context)
         if (context is OnEditingFinishedListener) {
             onEditingFinishedListener = context

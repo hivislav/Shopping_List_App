@@ -11,10 +11,11 @@ import ru.hivislav.shoppinglistapp.domain.AddShopItemUseCase
 import ru.hivislav.shoppinglistapp.domain.EditShopItemUseCase
 import ru.hivislav.shoppinglistapp.domain.GetShopItemUseCase
 import ru.hivislav.shoppinglistapp.domain.ShopItem
+import javax.inject.Inject
 
-class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repository = ShopListRepositoryImpl(application)
+class ShopItemViewModel @Inject constructor(
+    private val repository:ShopListRepositoryImpl
+) : ViewModel() {
 
     private val _errorInputName = MutableLiveData<Boolean>()
     val errorInputName: LiveData<Boolean>
