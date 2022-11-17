@@ -8,15 +8,20 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import ru.hivislav.shoppinglistapp.R
 import ru.hivislav.shoppinglistapp.databinding.ActivityMainBinding
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
     private lateinit var binding: ActivityMainBinding
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private lateinit var viewModel: MainViewModel
     private val adapter = ShopListAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as ShopListApplication).component.inject(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -24,7 +29,7 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
         setupRecyclerView()
         setupFabClickListener()
 
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         viewModel.shopList.observe(this) {
             adapter.submitList(it)
         }

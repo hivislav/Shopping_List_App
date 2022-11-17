@@ -1,8 +1,9 @@
 package ru.hivislav.shoppinglistapp.data
 
 import ru.hivislav.shoppinglistapp.domain.ShopItem
+import javax.inject.Inject
 
-class ShopListMapper {
+class ShopListMapper @Inject constructor() {
 
     fun mapEntityToDbModel(shopItem: ShopItem): ShopItemDbModel {
         return ShopItemDbModel(
