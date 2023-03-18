@@ -1,5 +1,6 @@
 package ru.hivislav.shoppinglistapp.presentation
 
+import android.content.ContentValues
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -56,6 +57,18 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
                 Log.d("myquery", "$shopItem")
             }
             cursor?.close()
+        }
+
+        thread {
+            contentResolver.insert(
+                Uri.parse("content://ru.hivislav.shoppinglistapp/shop_items"),
+                ContentValues().apply {
+                    put("id", 0)
+                    put("name", "content provider")
+                    put("count", 123)
+                    put("enabled", true)
+                }
+            )
         }
     }
 
