@@ -2,11 +2,21 @@ package ru.hivislav.shoppinglistapp.data
 
 import android.content.ContentProvider
 import android.content.ContentValues
+import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
 import android.util.Log
 
 class MyContentProvider : ContentProvider() {
+
+    private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
+        addURI("ru.hivislav.shoppinglistapp", "shop_items", GET_SHOP_ITEMS_QUERY)
+        // # - любое число
+        addURI("ru.hivislav.shoppinglistapp", "shop_items/#", GET_SHOP_ITEM_BY_ID_QUERY)
+        // * - любая строка
+        addURI("ru.hivislav.shoppinglistapp", "shop_items/*", GET_SHOP_ITEM_BY_NAME_QUERY)
+    }
+
     override fun onCreate(): Boolean {
         return true
     }
@@ -18,7 +28,15 @@ class MyContentProvider : ContentProvider() {
         selectionArgs: Array<out String>?,
         sortOrder: String?
     ): Cursor? {
-        Log.d("myquery", "$uri")
+
+        val code = uriMatcher.match(uri)
+        when(code) {
+            GET_SHOP_ITEMS_QUERY -> {
+
+            }
+        }
+
+        Log.d("myquery", "$uri -> code: $code")
         return  null
     }
 
@@ -41,5 +59,11 @@ class MyContentProvider : ContentProvider() {
         selectionArgs: Array<out String>?
     ): Int {
         TODO("Not yet implemented")
+    }
+
+    companion object {
+        private const val GET_SHOP_ITEMS_QUERY = 991
+        private const val GET_SHOP_ITEM_BY_ID_QUERY = 118
+        private const val GET_SHOP_ITEM_BY_NAME_QUERY = 667
     }
 }
