@@ -1,5 +1,6 @@
 package ru.hivislav.shoppinglistapp.presentation
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -33,6 +34,14 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
         viewModel.shopList.observe(this) {
             adapter.submitList(it)
         }
+
+        contentResolver.query(
+            Uri.parse("content://ru.hivislav.shoppinglistapp/shop_items"),
+            null,
+            null,
+            null,
+            null
+        )
     }
 
     private fun landscapeMode(): Boolean {

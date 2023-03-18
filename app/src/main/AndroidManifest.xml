@@ -25,6 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="ru.hivislav.shoppinglistapp"
+            android:name=".data.MyContentProvider"
+            android:exported="true"/>
     </application>
 
 </manifest>
