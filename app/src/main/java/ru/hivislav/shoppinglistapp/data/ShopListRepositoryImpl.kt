@@ -1,10 +1,7 @@
 package ru.hivislav.shoppinglistapp.data
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import ru.hivislav.shoppinglistapp.domain.ShopItem
 import ru.hivislav.shoppinglistapp.domain.ShopListRepository
 import javax.inject.Inject
@@ -32,9 +29,8 @@ class ShopListRepositoryImpl @Inject constructor(
         return mapper.mapDbModelToEntity(dbModel)
     }
 
-    override fun getShopList(): LiveData<List<ShopItem>> = Transformations.map(
-        shopListDao.getShopList()
-    ) {
+    override fun getShopList(): LiveData<List<ShopItem>> =
+        shopListDao.getShopList().map {
         mapper.mapListDbModelToListEntity(it)
     }
 }
