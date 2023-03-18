@@ -2,6 +2,7 @@ package ru.hivislav.shoppinglistapp.presentation
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -9,7 +10,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import ru.hivislav.shoppinglistapp.R
 import ru.hivislav.shoppinglistapp.databinding.ActivityMainBinding
+import ru.hivislav.shoppinglistapp.domain.ShopItem
 import javax.inject.Inject
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
@@ -35,13 +38,25 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
             adapter.submitList(it)
         }
 
-        contentResolver.query(
-            Uri.parse("content://ru.hivislav.shoppinglistapp/shop_items/55"),
-            null,
-            null,
-            null,
-            null
-        )
+        thread {
+            val cursor = contentResolver.query(
+                Uri.parse("content://ru.hivislav.shoppinglistapp/shop_items"),
+                null,
+                null,
+                null,
+                null
+            )
+            while (cursor?.moveToNext() == true) {
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+                val count = cursor.getInt(cursor.getColumnIndexOrThrow("count"))
+                val enabled = cursor.getInt(cursor.getColumnIndexOrThrow("enabled")) > 0
+
+                val shopItem = ShopItem(id =  id, name = name, count = count, enabled = enabled)
+                Log.d("myquery", "$shopItem")
+            }
+            cursor?.close()
+        }
     }
 
     private fun landscapeMode(): Boolean {

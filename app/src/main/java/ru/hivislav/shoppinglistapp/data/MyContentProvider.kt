@@ -40,14 +40,14 @@ class MyContentProvider : ContentProvider() {
     ): Cursor? {
 
         val code = uriMatcher.match(uri)
-        when(code) {
+        return when (code) {
             GET_SHOP_ITEMS_QUERY -> {
-
+                shopListDao.getShopListCursor()
+            }
+            else -> {
+                null
             }
         }
-
-        Log.d("myquery", "$uri -> code: $code")
-        return  null
     }
 
     override fun getType(uri: Uri): String? {
