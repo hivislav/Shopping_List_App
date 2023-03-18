@@ -6,8 +6,17 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
 import android.util.Log
+import ru.hivislav.shoppinglistapp.presentation.ShopListApplication
+import javax.inject.Inject
 
 class MyContentProvider : ContentProvider() {
+
+    private val component by lazy {
+        (context as ShopListApplication).component
+    }
+
+    @Inject
+    lateinit var shopListDao: ShopListDao
 
     private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
         addURI("ru.hivislav.shoppinglistapp", "shop_items", GET_SHOP_ITEMS_QUERY)
@@ -18,6 +27,7 @@ class MyContentProvider : ContentProvider() {
     }
 
     override fun onCreate(): Boolean {
+        component.inject(this)
         return true
     }
 
