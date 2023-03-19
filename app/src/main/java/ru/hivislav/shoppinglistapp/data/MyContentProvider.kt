@@ -67,14 +67,22 @@ class MyContentProvider : ContentProvider() {
                 val enabled = values.getAsBoolean("enabled")
 
                 val shopItem = ShopItem(id = id, name = name, count = count, enabled = enabled)
-                shopListDao.addShopItemFromContentValues(mapper.mapEntityToDbModel(shopItem))
+                shopListDao.addShopItemFromContentResolver(mapper.mapEntityToDbModel(shopItem))
             }
         }
         return null
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
-        TODO("Not yet implemented")
+        return when (uriMatcher.match(uri)) {
+            GET_SHOP_ITEMS_QUERY -> {
+                val id = selectionArgs?.get(0)?.toInt() ?: -1
+                shopListDao.deleteShopItemFromContentResolver(id)
+            }
+            else -> {
+                0
+            }
+        }
     }
 
     override fun update(

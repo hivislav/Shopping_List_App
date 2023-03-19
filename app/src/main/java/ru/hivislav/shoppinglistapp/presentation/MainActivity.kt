@@ -70,6 +70,14 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
                 }
             )
         }
+
+        thread {
+            contentResolver.delete(
+                Uri.parse("content://ru.hivislav.shoppinglistapp/shop_items"),
+                null,
+                arrayOf("3")
+            )
+        }
     }
 
     private fun landscapeMode(): Boolean {
